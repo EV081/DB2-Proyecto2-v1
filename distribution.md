@@ -54,6 +54,27 @@ Resumen detallado de la distribución de roles. Este formato les servirá como u
 
 * **Cómo trabaja en paralelo:** Genera matrices de números aleatorios (datos falsos) en Python que simulen los vectores de extracción y programa el K-Means sobre eso.
 
+Especificación para Paulo:
+Dile a Paulo que tiene razón a medias. Es verdad que el documento no usa la palabra literal "entrenar" como si fueran a crear una red neuronal compleja o una IA generativa, pero el concepto técnico y estadístico sí está explícitamente en el proyecto.
+
+Cuando me refiero a "entrenar", hablo exactamente de lo que el documento llama **"Agrupación"** o **"Clustering"** para construir el Codebook. Dile que su trabajo es aplicar **Aprendizaje No Supervisado (Unsupervised Machine Learning)**.
+
+Aquí te desgloso cada punto para que se lo pases y le quede clarísimo de dónde sale cada tarea de su rol:
+
+**1. El K-Means a gran escala (El "Entrenamiento")**
+El documento especifica claramente que el Módulo Codebook requiere el uso de "K-Means/K-Medoids para imágenes y audio". En la teoría de Machine Learning, cuando ejecutas el algoritmo K-Means para que encuentre patrones en miles de vectores y defina los centroides óptimos, a ese proceso computacional se le conoce formalmente como "ajustar" (fit) o "entrenar" el modelo .
+
+* Para imágenes, el documento pide usar "K-Means sobre todos los SIFT de todas las imágenes" para que esos centroides representen las "palabras visuales".
+* Para audio, pide usar "K-Means sobre todos los MFCC de todos los audios".
+
+**2. El Seleccionador Lingüístico (Para el texto)**
+Para la modalidad de texto, el documento indica que no se usa K-Means, sino que se aplican "técnicas lingüísticas". La tarea de Paulo aquí es escribir el código que tome todas las palabras extraídas por Juan Carlos y seleccione "las k palabras más frecuentes en toda la colección". Este top de palabras conformará el diccionario textual.
+
+**3. El "Cuantizador" (La Cuantización)**
+Esto también está explícito en la sección de consideraciones técnicas. El documento exige aplicar "Cuantización (imagen/audio): reduce descriptores altos a k codewords (compresión lossy)". Una vez que Paulo encuentre los centroides con el K-Means, su código debe recibir cada vector nuevo de las canciones o imágenes, calcular matemáticamente a qué centroide se parece más (cuantizarlo) y armar con eso el "histograma de codewords".
+
+En resumen: Paulo no va a entrenar a ChatGPT, pero sí tiene que programar y ejecutar un modelo estadístico (K-Means) sobre miles de matrices de datos para encontrar los clústeres. ¡Eso es 100% trabajo de Machine Learning!
+
 ### 3. Elmer: Ingeniero de Algoritmos (Capa del Motor Customizado)
 
 * **Reto de código:** Estructuras de datos complejas y optimización de memoria.
