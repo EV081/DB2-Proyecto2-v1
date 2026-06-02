@@ -87,6 +87,9 @@ Resumen detallado de la distribución de roles. Este formato les servirá como u
 
 * **Cómo trabaja en paralelo:** Puede ir diseñando la interfaz visual y programar los scripts de medición de tiempo y memoria envolviendo funciones vacías, listas para conectarse al código real en las semanas finales.
 
+## Infraestructura
+
+```text
 proyecto2_multimodal/
 ├── datasets/                  # (Ignorado en .gitignore) Aquí van los audios, imágenes y textos crudos.
 ├── docker/                    # [Dueño: Josue]
@@ -120,3 +123,5 @@ proyecto2_multimodal/
 ├── docker-compose.yml         # [Dueño: Josue] Levanta Postgres, pgvector y el backend.
 ├── requirements.txt           # Dependencias compartidas (fastapi, librosa, scikit-learn, etc.).
 └── README.md                  # El Informe Técnico (arquitectura, resultados, trade-offs).
+
+```
