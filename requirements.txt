@@ -1,0 +1,1 @@
+# Dependencias compartidas (fastapi, librosa, scikit-learn, etc.)

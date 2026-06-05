@@ -1,0 +1,1 @@
+-- Script para crear la DB, activar pgvector y crear tablas base.
