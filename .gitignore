@@ -1,3 +1,9 @@
 .env
-__pycache__/
 ppts/
+bd.md
+datasets/
+__pycache__/
+*.pyc
+.venv/
+venv/
+
