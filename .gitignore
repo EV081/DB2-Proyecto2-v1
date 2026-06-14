@@ -1,7 +1,9 @@
 .env
-bd.md
+ppts/
 datasets/
 __pycache__/
 *.pyc
 .venv/
 venv/
+
+bd.md
