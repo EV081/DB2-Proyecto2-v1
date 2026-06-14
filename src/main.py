@@ -6,8 +6,8 @@ from src.api.routes_store import router as store_router
 
 app = FastAPI(
     title="DB2 Proyecto 2 API",
-    description="Hito 1: infraestructura base, PostgreSQL con pgvector y endpoints mock.",
-    version="0.1.0",
+    description="Hito 2: busqueda nativa PostgreSQL con pgvector, GIN y GiST.",
+    version="0.2.0",
 )
 
 app.include_router(health_router)
@@ -20,5 +20,5 @@ def root():
     return {
         "message": "DB2 Proyecto 2 API",
         "module": "Docker + PostgreSQL + pgvector + FastAPI",
-        "status": "mock endpoints ready",
+        "status": "native database search ready",
     }
