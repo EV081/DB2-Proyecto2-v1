@@ -1,52 +1,69 @@
-from sqlalchemy import Column, DateTime, ForeignKey, Integer, Text, func
+from datetime import datetime
+from typing import Any
+
+from sqlalchemy import Column, DateTime, Text, func
 from sqlalchemy.dialects.postgresql import JSONB
-from sqlalchemy.orm import declarative_base, relationship
+from sqlmodel import Field, Relationship, SQLModel
 
 try:
     from pgvector.sqlalchemy import Vector
 except ImportError:  # Allows imports before dependencies are installed.
     Vector = None
 
-Base = declarative_base()
 
-
-def vector_column(dimensions: int):
+def vector_column(dimensions: int) -> Column:
     if Vector is None:
         return Column(Text, nullable=True)
     return Column(Vector(dimensions), nullable=True)
 
 
-class Item(Base):
+class Item(SQLModel, table=True):
     __tablename__ = "items"
 
-    id = Column(Integer, primary_key=True, index=True)
-    title = Column(Text, nullable=False)
-    modality = Column(Text, nullable=False)
-    meta = Column("metadata", JSONB, nullable=True)
-    embedding = vector_column(8)
-    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    id: int | None = Field(default=None, primary_key=True)
+    title: str
+    modality: str = Field(index=True)
+    metadata_: dict[str, Any] = Field(
+        default_factory=dict,
+        sa_column=Column("metadata", JSONB, nullable=False, server_default="{}"),
+    )
+    created_at: datetime | None = Field(
+        default=None,
+        sa_column=Column(DateTime(timezone=True), server_default=func.now(), nullable=False),
+    )
 
-    chunks = relationship("Chunk", back_populates="item")
+    chunks: list["Chunk"] = Relationship(back_populates="item")
 
 
-class Chunk(Base):
+class Chunk(SQLModel, table=True):
     __tablename__ = "chunks"
 
-    id = Column(Integer, primary_key=True, index=True)
-    item_id = Column(Integer, ForeignKey("items.id", ondelete="CASCADE"), nullable=False)
-    chunk_index = Column(Integer, nullable=False)
-    content = Column(Text, nullable=True)
-    histogram = Column(JSONB, nullable=True)
-    embedding = vector_column(8)
-    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    id: int | None = Field(default=None, primary_key=True)
+    item_id: int = Field(foreign_key="items.id", index=True)
+    chunk_index: int
+    content: str | None = Field(default=None, sa_column=Column(Text, nullable=True))
+    histogram: dict[str, Any] = Field(
+        default_factory=dict,
+        sa_column=Column(JSONB, nullable=False, server_default="{}"),
+    )
+    embedding: Any | None = Field(default=None, sa_column=vector_column(8))
+    created_at: datetime | None = Field(
+        default=None,
+        sa_column=Column(DateTime(timezone=True), server_default=func.now(), nullable=False),
+    )
 
-    item = relationship("Item", back_populates="chunks")
+    item: Item | None = Relationship(back_populates="chunks")
 
 
-class SearchLog(Base):
+class SearchLog(SQLModel, table=True):
     __tablename__ = "search_logs"
 
-    id = Column(Integer, primary_key=True, index=True)
-    query = Column(Text, nullable=False)
-    modality = Column(Text, nullable=False)
-    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    id: int | None = Field(default=None, primary_key=True)
+    query: str
+    modality: str = Field(index=True)
+    engine: str
+    latency_ms: float | None = None
+    created_at: datetime | None = Field(
+        default=None,
+        sa_column=Column(DateTime(timezone=True), server_default=func.now(), nullable=False),
+    )

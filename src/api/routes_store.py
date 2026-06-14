@@ -1,16 +1,27 @@
 from fastapi import APIRouter
+from sqlalchemy.exc import SQLAlchemyError
+
+from src.db.native_search import search_text_gin
 
 router = APIRouter(prefix="/api/store", tags=["store"])
 
 
 @router.get("/search")
-def search_store(query: str = "camisa azul"):
-    return {
-        "query": query,
-        "modality": "image_text",
-        "engine": "mock",
-        "results": [
-            {"id": 1, "title": "Producto demo 1", "score": 0.91},
-            {"id": 2, "title": "Producto demo 2", "score": 0.85},
-        ],
-    }
+def search_store(query: str = "camisa", limit: int = 10):
+    try:
+        results = search_text_gin(query=query, limit=limit, modality="store")
+        return {
+            "query": query,
+            "modality": "store_text",
+            "engine": "postgres_gin_full_text",
+            "results": results,
+        }
+    except (SQLAlchemyError, ValueError) as exc:
+        return {
+            "query": query,
+            "modality": "store_text",
+            "engine": "postgres_gin_full_text",
+            "database": "error",
+            "detail": exc.__class__.__name__,
+            "results": [],
+        }
