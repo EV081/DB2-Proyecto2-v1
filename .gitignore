@@ -1,11 +1,11 @@
 .env
 ppts/
-bd.md
 datasets/
 __pycache__/
 *.pyc
 .venv/
 venv/
 
+bd.md
 Proyecto-2-anotaciones
 

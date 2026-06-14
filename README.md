@@ -53,3 +53,15 @@ streamlit run ui/app.py
 │   └── init.sql               # Setup de BD
 └── docker-compose.yml         # Infraestructura PostgreSQL
 ```
+
+## Datasets
+
+Búsqueda Musical Inteligente
+https://www.kaggle.com/datasets/imuhammad/audio-features-and-lyrics-of-spotify-songs
+
+Recomendación Multimodal
+https://www.kaggle.com/datasets/paramaggarwal/fashion-product-images-dataset
+
+Data de audios
+https://github.com/mdeff/fma/tree/master
+

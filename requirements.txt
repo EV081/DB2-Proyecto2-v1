@@ -7,6 +7,12 @@ python-dotenv
 pgvector
 python-multipart==0.0.32
 
+librosa
+soundfile
+opencv-python
+nltk
+scikit-learn
+
 altair==6.2.1
 anyio==4.13.0
 attrs==26.1.0
