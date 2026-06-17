@@ -1,0 +1,366 @@
+{
+  "info": {
+    "name": "DB2 Proyecto 2 - Multimodal Search API",
+    "description": "Coleccion para probar la API del Hito 3. Busqueda multimodal (texto, audio, imagen) con SPIMI / pgvector / GIN / GiST sobre las apps `music` y `fashion`. Antes de correr, levanta el backend con `./setup_all.sh` o `uvicorn src.main:app --reload`.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1:8000",
+      "type": "string"
+    },
+    {
+      "key": "k",
+      "value": "10",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Root",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": ["{{baseUrl}}"],
+              "path": [""]
+            },
+            "description": "Info basica de la API y apps registradas."
+          }
+        },
+        {
+          "name": "Health check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            }
+          }
+        },
+        {
+          "name": "DB status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/db/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "db", "status"]
+            },
+            "description": "Verifica conexion a Postgres + extensiones (pgvector, pg_trgm)."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Music - lyrics search (texto)",
+      "description": "GET /api/music/search/lyrics. Engines: spimi (motor propio), gin (Postgres trigram), gist (Postgres trigram), pgvector (cosine sobre TF-IDF denso).",
+      "item": [
+        {
+          "name": "SPIMI - love",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/music/search/lyrics?q=love and broken hearts&engine=spimi&k={{k}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "music", "search", "lyrics"],
+              "query": [
+                {"key": "q", "value": "love and broken hearts"},
+                {"key": "engine", "value": "spimi"},
+                {"key": "k", "value": "{{k}}"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "pgvector - love",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/music/search/lyrics?q=love and broken hearts&engine=pgvector&k={{k}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "music", "search", "lyrics"],
+              "query": [
+                {"key": "q", "value": "love and broken hearts"},
+                {"key": "engine", "value": "pgvector"},
+                {"key": "k", "value": "{{k}}"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "GIN - love",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/music/search/lyrics?q=love and broken hearts&engine=gin&k={{k}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "music", "search", "lyrics"],
+              "query": [
+                {"key": "q", "value": "love and broken hearts"},
+                {"key": "engine", "value": "gin"},
+                {"key": "k", "value": "{{k}}"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "GiST - love",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/music/search/lyrics?q=love and broken hearts&engine=gist&k={{k}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "music", "search", "lyrics"],
+              "query": [
+                {"key": "q", "value": "love and broken hearts"},
+                {"key": "engine", "value": "gist"},
+                {"key": "k", "value": "{{k}}"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "SPIMI - dance",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/music/search/lyrics?q=dance all night long&engine=spimi&k={{k}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "music", "search", "lyrics"],
+              "query": [
+                {"key": "q", "value": "dance all night long"},
+                {"key": "engine", "value": "spimi"},
+                {"key": "k", "value": "{{k}}"}
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Music - audio search (upload)",
+      "description": "POST /api/music/search/audio. Envia un mp3/wav como form-data field `file`. Engines: spimi (histograma sobre codebook acustico K-Means + SPIMI), pgvector (coseno sobre embedding denso).",
+      "item": [
+        {
+          "name": "SPIMI - upload audio",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "description": "Selecciona un .mp3/.wav de prueba. Ej: data/fma_small_flat/000002.mp3 o data/test.mp3",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/music/search/audio?engine=spimi&k={{k}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "music", "search", "audio"],
+              "query": [
+                {"key": "engine", "value": "spimi"},
+                {"key": "k", "value": "{{k}}"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "pgvector - upload audio",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "description": "Selecciona un .mp3/.wav de prueba.",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/music/search/audio?engine=pgvector&k={{k}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "music", "search", "audio"],
+              "query": [
+                {"key": "engine", "value": "pgvector"},
+                {"key": "k", "value": "{{k}}"}
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Fashion - description search (texto)",
+      "description": "GET /api/fashion/search/description. Mismos 4 engines.",
+      "item": [
+        {
+          "name": "SPIMI - blue shirt",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/fashion/search/description?q=blue casual shirt men&engine=spimi&k={{k}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "fashion", "search", "description"],
+              "query": [
+                {"key": "q", "value": "blue casual shirt men"},
+                {"key": "engine", "value": "spimi"},
+                {"key": "k", "value": "{{k}}"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "pgvector - blue shirt",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/fashion/search/description?q=blue casual shirt men&engine=pgvector&k={{k}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "fashion", "search", "description"],
+              "query": [
+                {"key": "q", "value": "blue casual shirt men"},
+                {"key": "engine", "value": "pgvector"},
+                {"key": "k", "value": "{{k}}"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "GIN - blue shirt",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/fashion/search/description?q=blue casual shirt men&engine=gin&k={{k}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "fashion", "search", "description"],
+              "query": [
+                {"key": "q", "value": "blue casual shirt men"},
+                {"key": "engine", "value": "gin"},
+                {"key": "k", "value": "{{k}}"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "GiST - blue shirt",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/fashion/search/description?q=blue casual shirt men&engine=gist&k={{k}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "fashion", "search", "description"],
+              "query": [
+                {"key": "q", "value": "blue casual shirt men"},
+                {"key": "engine", "value": "gist"},
+                {"key": "k", "value": "{{k}}"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "SPIMI - nike summer",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/fashion/search/description?q=Nike sports summer&engine=spimi&k={{k}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "fashion", "search", "description"],
+              "query": [
+                {"key": "q", "value": "Nike sports summer"},
+                {"key": "engine", "value": "spimi"},
+                {"key": "k", "value": "{{k}}"}
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Fashion - image search (upload)",
+      "description": "POST /api/fashion/search/image. Envia un .jpg/.png como form-data field `file`. Engines: spimi (BoVW SIFT + SPIMI), pgvector (coseno sobre embedding denso).",
+      "item": [
+        {
+          "name": "SPIMI - upload image",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "description": "Selecciona una imagen .jpg/.png. Ej: data/fashion/images/10000.jpg o data/test.png",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/fashion/search/image?engine=spimi&k={{k}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "fashion", "search", "image"],
+              "query": [
+                {"key": "engine", "value": "spimi"},
+                {"key": "k", "value": "{{k}}"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "pgvector - upload image",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "description": "Selecciona una imagen .jpg/.png.",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/fashion/search/image?engine=pgvector&k={{k}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "fashion", "search", "image"],
+              "query": [
+                {"key": "engine", "value": "pgvector"},
+                {"key": "k", "value": "{{k}}"}
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
